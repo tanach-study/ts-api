@@ -1,5 +1,4 @@
 const { getDB } = require('../lib/dbConnection');
-const tanach = require('../lib/tanach.json');
 
 function getOnePerek (req, res, next) {
   const { sefer, perek } = req.params;

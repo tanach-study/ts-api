@@ -1,0 +1,41 @@
+{
+  "name": "ts-api",
+  "version": "1.0.0",
+  "description": "An API server for the Tanach Study Program",
+  "main": "server.js",
+  "scripts": {
+    "clean": "rm -rf node_modules && rm -f package-lock.json",
+    "deploy": "npm run clean && npm i && npm run start",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tanach-study/ts-api.git"
+  },
+  "author": "Joey Pinhas",
+  "license": "MIT",
+  "engines": {
+    "node": "8.0.0",
+    "npm": "5.0.0"
+  },
+  "dependencies": {
+    "base64url": "^2.0.0",
+    "body-parser": "^1.17.2",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.3",
+    "google-auth-library": "^0.11.0",
+    "googleapis": "^22.2.0",
+    "mailcomposer": "^4.0.1",
+    "mongodb": "^2.2.30",
+    "morgan": "^1.8.2",
+    "node-fetch": "^1.6.3",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "eslint": "^4.3.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.1.0"
+  }
+}
