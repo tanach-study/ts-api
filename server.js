@@ -5,7 +5,6 @@ const express      = require('express');
 const logger       = require('morgan');
 const path         = require('path');
 const bodyParser   = require('body-parser');
-const history      = require('connect-history-api-fallback');
 
 const app          = express();
 const PORT         = process.argv[2] || process.env.PORT || 3000;
@@ -28,16 +27,10 @@ app.use((req, res, next) => {
 // build API routes
 app.use('/api', require('./routes/api.js'));
 app.use('/api/videos', require('./routes/videos.js'));
-
-// TODO: update these to use mongo
 app.use('/api/signup', require('./routes/signup.js'));
 app.use('/api/contact', require('./routes/contact.js'));
 
-app.use(history({ logger: logger }))
-
-app.use(express.static(path.join(__dirname, 'dist')));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'favicons')));
+app.use(logger('dev'));
 
 app.use((err, req, res, next) => {
   if(err.status) {
