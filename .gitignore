@@ -1,0 +1,9 @@
+node_modules/
+
+dist/
+
+.env
+
+sftp-config.json
+
+client_secret.json
