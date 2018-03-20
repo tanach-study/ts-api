@@ -28,8 +28,11 @@ app.use((req, res, next) => {
 app.use('/', require('./routes/api.js'));
 app.use('/api', require('./routes/api.js'));
 app.use('/videos', require('./routes/videos.js'));
+app.use('/api/videos', require('./routes/videos.js'));
 app.use('/signup', require('./routes/signup.js'));
+app.use('/api/signup', require('./routes/signup.js'));
 app.use('/contact', require('./routes/contact.js'));
+app.use('/api/contact', require('./routes/contact.js'));
 
 app.use(logger('dev'));
 
