@@ -37,7 +37,7 @@ function checkIfEmailExists (req, res, next) {
   .then(r => r.json())
   .then(data => {
     // if the results set is empty then we're good to continue
-    if (data.results.length == 0) {
+    if (!data.results && data.results.length == 0) {
       next();
     } else {
       // email address is registered; we need to add them back to the list
