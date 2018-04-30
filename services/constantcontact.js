@@ -37,33 +37,53 @@ function checkIfEmailExists (req, res, next) {
   .then(r => r.json())
   .then(data => {
     // if the results set is empty then we're good to continue
-    if (data.results.length == 0) {
+    if (data.results && data.results.length == 0) {
       next();
     } else {
-      let err = new Error ('This email address is already registered.');
-      err.status = 422;
-      next(err);
+      // email address is registered; we need to add them back to the list
+      res.existingUser = data.results;
+      next();
     }
   })
   .catch(err => next(err));
 }
 
 function registerEmail (req, res, next) {
-  const email = req.body.email;
-  const fname = req.body.firstName;
-  const lname = req.body.lastName;
+  let body = {};
+  let method;
   const key = process.env.CC_KEY;
   const token = process.env.CC_TOKEN;
   const listId = process.env.CC_LIST_PROD;
-  const url = `https://api.constantcontact.com/v2/contacts?api_key=${key}&action_by=ACTION_BY_VISITOR`;
+  let url;
 
-  fetch(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+  // if the user already exists as a user, we want to re-add them
+  if (res.existingUser) {
+    const user = res.existingUser[0];
+    const userID = user.id;
+    url = `https://api.constantcontact.com/v2/contacts/${userID}?api_key=${key}&action_by=ACTION_BY_OWNER`;
+    method = 'PUT';
+    const lists = user.lists;
+    lists.push({
+      id : listId,
+    });
+    body.lists = lists.map(list => {
+      return {
+        id: list.id,
+      }
+    });
+    const email_addresses = user.email_addresses.map(email => {
+      return {
+        email_address: email.email_address,
+      }
+    });
+    body.email_addresses = email_addresses;
+  } else {
+    const email = req.body.email;
+    const fname = req.body.firstName;
+    const lname = req.body.lastName;
+    url = `https://api.constantcontact.com/v2/contacts?api_key=${key}&action_by=ACTION_BY_OWNER`;
+    method = 'POST';
+    body = {
       lists: [
         {
           id: listId
@@ -76,7 +96,16 @@ function registerEmail (req, res, next) {
       ],
       first_name: fname,
       last_name: lname,
-    }),
+    };
+  }
+
+  fetch(url, {
+    method: method,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
   })
   .then(r => r.json())
   .then(resp => {
