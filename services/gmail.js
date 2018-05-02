@@ -6,21 +6,20 @@ const { isValidEmail } = require('../lib/lib.js');
 
 function getAuthObject(req, res, next) {
   gmailAuth.authorize()
-  .then(obj => {
-    res.authObj = obj;
-    next();
-  })
-  .catch(err => next(err));
+    .then((obj) => {
+      res.authObj = obj;
+      next();
+    })
+    .catch(err => next(err));
 }
 
 function generateEmailString(req, res, next) {
   const senderName = req.body.name;
   const fromEmail = req.body.email;
-  const subject = req.body.subject;
-  const message = req.body.message;
+  const { subject, message } = req.body;
 
   if (!(fromEmail && subject && message)) return next(new Error('Please fill out all the fields.'));
-  if (! isValidEmail(fromEmail)) return next(new Error('Invalid email.'));
+  if (!isValidEmail(fromEmail)) return next(new Error('Invalid email.'));
 
   const toEmail = process.env.TO_EMAIL;
 
@@ -29,32 +28,32 @@ function generateEmailString(req, res, next) {
     to: toEmail,
     sender: fromEmail,
     replyTo: fromEmail,
-    subject: subject,
+    subject,
     text: message,
   };
   const mail = mailcomposer(emailObj);
-  mail.build((err, message) => {
+  mail.build((err, newMessage) => {
     if (err) next(err);
-    res.base64Email = base64url(message);
+    res.base64Email = base64url(newMessage);
     next();
   });
 }
 
 function sendEmail(req, res, next) {
   const auth = res.authObj;
-  const base64Email = res.base64Email;
+  const { base64Email } = res;
 
   const requestObj = {
-    auth: auth,
+    auth,
     userId: 'me',
     resource: {
       raw: base64Email,
-    }
+    },
   };
 
   const executeCB = (err, response) => {
     if (err) {
-      console.log('The API returned an error: ' + err);
+      console.log('The API returned an error:', err);
       return next(err);
     } else {
       res.data = {
@@ -73,4 +72,4 @@ module.exports = {
   getAuthObject,
   generateEmailString,
   sendEmail,
-}
+};
