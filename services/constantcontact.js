@@ -1,19 +1,18 @@
 const fetch = require('node-fetch');
-const dbConnection = require('../lib/dbConnection.js');
 const { isValidEmail } = require('../lib/lib.js');
 
-function validateData (req, res, next) {
-  const email = req.body.email;
+function validateData(req, res, next) {
+  const { email } = req.body;
   const fname = req.body.firstName;
   const lname = req.body.lastName;
 
   if (!(email && fname && lname)) {
-    let err = new Error ('Please fill out all fields.');
+    const err = new Error('Please fill out all fields.');
     err.status = 422;
     next(err);
   }
   if (!isValidEmail(email)) {
-    let err = new Error ('Please submit a valid email address.');
+    const err = new Error('Please submit a valid email address.');
     err.status = 422;
     next(err);
   }
@@ -22,8 +21,8 @@ function validateData (req, res, next) {
   next();
 }
 
-function checkIfEmailExists (req, res, next) {
-  const email = req.body.email;
+function checkIfEmailExists(req, res, next) {
+  const { email } = req.body;
   const key = process.env.CC_KEY;
   const token = process.env.CC_TOKEN;
   const url = `https://api.constantcontact.com/v2/contacts?api_key=${key}&email=${email}`;
@@ -31,24 +30,24 @@ function checkIfEmailExists (req, res, next) {
   fetch(url, {
     method: 'GET',
     headers: {
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   })
-  .then(r => r.json())
-  .then(data => {
-    // if the results set is empty then we're good to continue
-    if (data.results && data.results.length == 0) {
-      next();
-    } else {
-      // email address is registered; we need to add them back to the list
-      res.existingUser = data.results;
-      next();
-    }
-  })
-  .catch(err => next(err));
+    .then(r => r.json())
+    .then((data) => {
+      // if the results set is empty then we're good to continue
+      if (data.results && data.results.length === 0) {
+        next();
+      } else {
+        // email address is registered; we need to add them back to the list
+        res.existingUser = data.results;
+        next();
+      }
+    })
+    .catch(err => next(err));
 }
 
-function registerEmail (req, res, next) {
+function registerEmail(req, res, next) {
   let body = {};
   let method;
   const key = process.env.CC_KEY;
@@ -62,23 +61,21 @@ function registerEmail (req, res, next) {
     const userID = user.id;
     url = `https://api.constantcontact.com/v2/contacts/${userID}?api_key=${key}&action_by=ACTION_BY_OWNER`;
     method = 'PUT';
-    const lists = user.lists;
+    const { lists } = user;
     lists.push({
-      id : listId,
+      id: listId,
     });
-    body.lists = lists.map(list => {
-      return {
-        id: list.id,
-      }
-    });
-    const email_addresses = user.email_addresses.map(email => {
-      return {
-        email_address: email.email_address,
-      }
-    });
-    body.email_addresses = email_addresses;
+    body.lists = lists.map(list => ({
+      id: list.id,
+    }
+    ));
+    const emailAddresses = user.email_addresses.map(email => ({
+      email_address: email.email_address,
+    }
+    ));
+    body.email_addresses = emailAddresses;
   } else {
-    const email = req.body.email;
+    const { email } = req.body;
     const fname = req.body.firstName;
     const lname = req.body.lastName;
     url = `https://api.constantcontact.com/v2/contacts?api_key=${key}&action_by=ACTION_BY_OWNER`;
@@ -86,13 +83,13 @@ function registerEmail (req, res, next) {
     body = {
       lists: [
         {
-          id: listId
-        }
+          id: listId,
+        },
       ],
       email_addresses: [
         {
-          email_address: email
-        }
+          email_address: email,
+        },
       ],
       first_name: fname,
       last_name: lname,
@@ -100,31 +97,31 @@ function registerEmail (req, res, next) {
   }
 
   fetch(url, {
-    method: method,
+    method,
     headers: {
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
   })
-  .then(r => r.json())
-  .then(resp => {
-    if (resp.id) {
-      res.data = {
-        status: 'OK',
+    .then(r => r.json())
+    .then((resp) => {
+      if (resp.id) {
+        res.data = {
+          status: 'OK',
+        };
+        next();
+      } else {
+        const err = new Error('Internal server error.');
+        err.status = 500;
+        next(err);
       }
-      next();
-    } else {
-      let err = new Error('Internal server error.');
-      err.status = 500;
-      next(err);
-    }
-  })
-  .catch(err => next(err));
+    })
+    .catch(err => next(err));
 }
 
 module.exports = {
   validateData,
   checkIfEmailExists,
   registerEmail,
-}
+};

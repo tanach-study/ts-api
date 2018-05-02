@@ -1,4 +1,5 @@
 'use strict';
+
 // if (process.env.NODE_ENV == 'development') require('dotenv').config({ silent: true });
 require('dotenv').config({ silent: true });
 const express      = require('express');
@@ -37,7 +38,7 @@ app.use('/api/contact', require('./routes/contact.js'));
 app.use(logger('dev'));
 
 app.use((err, req, res, next) => {
-  if(err.status) {
+  if (err.status) {
     res.status(err.status).json(err.message);
   } else if (err.message) {
     res.status(500).json(err.message);

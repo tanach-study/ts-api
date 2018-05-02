@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const ccService = require('../services/constantcontact.js');
 
-function sendAsJSON(req, res, next) {
+function sendAsJSON(req, res) {
   res.json(res.data);
 }
 

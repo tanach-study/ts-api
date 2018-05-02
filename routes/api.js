@@ -1,9 +1,9 @@
-const router     = require('express').Router();
-const seferModel = require('../models/sefer');
-const perekModel = require('../models/perek');
+const router       = require('express').Router();
+const seferModel   = require('../models/sefer');
+const perekModel   = require('../models/perek');
 const teacherModel = require('../models/teacher.js');
 
-function sendAsJSON(req, res, next) {
+function sendAsJSON(req, res) {
   res.json(res.data);
 }
 

@@ -1,11 +1,10 @@
 const router = require('express').Router();
 const gmailService = require('../services/gmail.js');
 
-function sendAsJSON(req, res, next) {
+function sendAsJSON(req, res) {
   res.json(res.data);
 }
 
-router.route('/')
-  .post(gmailService.getAuthObject, gmailService.generateEmailString, gmailService.sendEmail, sendAsJSON);
+router.post('/', gmailService.getAuthObject, gmailService.generateEmailString, gmailService.sendEmail, sendAsJSON);
 
 module.exports = router;
