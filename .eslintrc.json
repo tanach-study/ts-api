@@ -1,0 +1,22 @@
+{
+  "extends": "airbnb",
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "rules": {
+    "quotes": ["error", "single"],
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "import/extensions": ["error", {
+      "js": "always"
+    }],
+    "no-multi-spaces": ["error", {
+      "exceptions": {
+        "VariableDeclarator": true
+      }
+    }]
+  }
+}
