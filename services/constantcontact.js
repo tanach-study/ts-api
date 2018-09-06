@@ -59,7 +59,7 @@ function registerEmail(req, res, next) {
   if (res.existingUser) {
     const user = res.existingUser[0];
     const userID = user.id;
-    url = `https://api.constantcontact.com/v2/contacts/${userID}?api_key=${key}&action_by=ACTION_BY_OWNER`;
+    url = `https://api.constantcontact.com/v2/contacts/${userID}?api_key=${key}&action_by=ACTION_BY_VISITOR`;
     method = 'PUT';
     const { lists } = user;
     lists.push({
@@ -78,7 +78,7 @@ function registerEmail(req, res, next) {
     const { email } = req.body;
     const fname = req.body.firstName;
     const lname = req.body.lastName;
-    url = `https://api.constantcontact.com/v2/contacts?api_key=${key}&action_by=ACTION_BY_OWNER`;
+    url = `https://api.constantcontact.com/v2/contacts?api_key=${key}&action_by=ACTION_BY_VISITOR`;
     method = 'POST';
     body = {
       lists: [
