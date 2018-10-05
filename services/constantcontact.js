@@ -109,9 +109,9 @@ function registerEmail(req, res, next) {
       if (resp.id) {
         res.data = {
           status: 'OK',
-          email: email,
-          first_name: fname,
-          last_name: lname,
+          email: req.body.email,
+          first_name: req.body.firstName,
+          last_name: req.body.lastName,
         };
         next();
       } else {
