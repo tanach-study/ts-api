@@ -20,7 +20,8 @@ function getAllSefarim(req, res, next) {
 
 function getOneSefer(req, res, next) {
   const { sefer } = req.params;
-  getDB().then((db) => {
+  getDB().then((client) => {
+    const db = client.db(DB_NAME);
     db.collection('books')
       .findOne({ 'seferMeta.book_name': sefer }, { _id: 0 })
       .then((data) => {

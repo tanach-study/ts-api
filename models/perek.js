@@ -1,9 +1,12 @@
 const { getDB } = require('../lib/dbConnection');
 
+const { DB_NAME } = process.env;
+
 function getOnePerek(req, res, next) {
   const { sefer, perek } = req.params;
   const queryPerek = String(parseInt(perek, 10)) === 'NaN' ? perek : parseInt(perek, 10);
-  getDB().then((db) => {
+  getDB().then((client) => {
+    const db = client.db(DB_NAME);
     db.collection('perakim')
       .findOne({
         book_name: sefer,
