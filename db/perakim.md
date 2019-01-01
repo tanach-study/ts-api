@@ -128,9 +128,23 @@ Units can be one of:
 
 division -> segment -> section -> unit -> part
 
-* neviim-rishonim -> none -> yehoshua -> 1
+* neviim-rishonim -> null -> yehoshua -> 1
 * parasha -> bereshit -> noah -> null -> 3
 * haftara -> bereshit -> noah -> null -> 3
 * mishna -> zeraim -> berachot -> 1 -> 1
-* tehillim -> none -> 137 -> none
-* madim -> none -> pesah -> torah -> 1
+* tehillim -> null -> 137 -> null
+* moadim -> null -> pesah -> torah -> 1
+
+# URL Structure
+
+With this kind of database model, we can have URL's structured as the program name (tanach-study, mishna-study, etc), foollowed by an arbitrary number of parts after it. The API can then validate which pieces it needs in order to service the request.
+
+A different implementation of the API would be to add a route for each program and have different model handlers for each program. Thus, the first function in the route pipeline would be to build the query object, and the next would be to execute it.
+
+/tanach-study/neviim-rishonim/yehoshua/1
+/parasha-study/bereshit/noah/1
+/haftara-study/bereshit/noah/1
+/tanach-study/torah/bereshit/noah
+/mishna-study/zeraim/berachot/1/2
+/tehillim-study/137
+/moadim-study/pesah/torah/1
