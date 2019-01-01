@@ -142,9 +142,15 @@ With this kind of database model, we can have URL's structured as the program na
 A different implementation of the API would be to add a route for each program and have different model handlers for each program. Thus, the first function in the route pipeline would be to build the query object, and the next would be to execute it.
 
 /tanach-study/neviim-rishonim/yehoshua/1
+
 /parasha-study/bereshit/noah/1
+
 /haftara-study/bereshit/noah/1
+
 /tanach-study/torah/bereshit/noah
+
 /mishna-study/zeraim/berachot/1/2
+
 /tehillim-study/137
+
 /moadim-study/pesah/torah/1
