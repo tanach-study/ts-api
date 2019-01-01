@@ -1,7 +1,10 @@
 const { getDB } = require('../lib/dbConnection.js');
 
+const { DB_NAME } = process.env;
+
 function getAllSefarim(req, res, next) {
-  getDB().then((db) => {
+  getDB().then((client) => {
+    const db = client.db(DB_NAME);
     db.collection('books')
       .find({}, { _id: 0 })
       .sort({ 'seferMeta.book_id': 1 })
