@@ -4,41 +4,58 @@ This is a sample schema definition for the perakim collection in the database.
 
 ```json
 {
-  "_id": "Mongo ID",
-  "teacher_bio": "string",
+  "division": "string",
+  "division_name": "string",
+  "division_title": "string",
+
+  "segment": "string",
+  "segment_name": "string",
+  "segment_title": "string",
+  
+  "section": "string",
+  "section_name": "string",
+  "section_title": "string",
+  
+  "unit": "string",
+  "unit_name": "string",
+  "unit_title": "string",
+  
+  "part": "string",
+  "part_name": "string",
+  "part_title": "string",
+
+  "series": "string",
+  "series_name": "string",
+
   "teacher_title": "string",
   "teacher_fname": "string",
   "teacher_mname": "string|null",
   "teacher_lname": "string",
-  "reader_bio": "string|null",
-  "reader_title": "string|null",
-  "reader_fname": "string|null",
-  "reader_mname": "string|null",
-  "reader_lname": "string|null",
-  "part_id": "number",
-  "part_name": "string",
-  "is_many_parts": "boolean",
-  "parts_breakdown": "array|null",
-  "perek_id": "number",
-  "teacher_id": "number",
-  "reader_id": "number|null",
-  "book_id": "number",
-  "book_num_chapters": "number",
-  "book_name_pretty_eng": "string",
-  "book_name": "string",
-  "prev_book_id": null,
-  "prev_book_name": null,
-  "prev_book_num_chapters": null,
-  "next_book_id": 2,
-  "next_book_name": "shofetim",
-  "next_book_num_chapters": 21,
-  "sefer": "yehoshua"
+  "teacher_short_bio": "string",
+  "teacher_long_bio": "string",
+  "teacher_image_url": "string",
+  
+  "teamim": [
+    {    
+      "reader_title": "string",
+      "reader_fname": "string",
+      "reader_mname": "string|null",
+      "reader_lname": "string",
+      "reader_short_bio": "string",
+      "reader_long_bio": "string",
+      "reader_image_url": "string",
+      "audio_url": "string"
+    }
+  ]
+  
+
 }
 ```
 
 # Structure:
 
 division -> segment -> section -> unit -> part
+series
 
 ## Divisions
 
@@ -128,7 +145,8 @@ Units can be one of:
 
 division -> segment -> section -> unit -> part
 
-* neviim-rishonim -> null -> yehoshua -> 1
+* neviim-rishonim -> null -> yehoshua -> 1 -> null
+* neviim-rishonim -> null -> yehoshua -> 5 -> b
 * parasha -> bereshit -> noah -> null -> 3
 * haftara -> bereshit -> noah -> null -> 3
 * mishna -> zeraim -> berachot -> 1 -> 1
@@ -142,6 +160,8 @@ With this kind of database model, we can have URL's structured as the program na
 A different implementation of the API would be to add a route for each program and have different model handlers for each program. Thus, the first function in the route pipeline would be to build the query object, and the next would be to execute it.
 
 /tanach-study/neviim-rishonim/yehoshua/24
+
+/tanach-study/neviim-aharonim/yehezkel/23/b
 
 /parasha-study/bereshit/noah/3
 
