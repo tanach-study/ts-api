@@ -27,6 +27,8 @@ This is a sample schema definition for the perakim collection in the database.
   "series": "string",
   "series_name": "string",
 
+  "audio_url": "string",
+
   "teacher_title": "string",
   "teacher_fname": "string",
   "teacher_mname": "string|null",
@@ -138,20 +140,7 @@ series
 Units can be one of:
 
 * perek
-* parasha
-* 
-
-## Examples
-
-division -> segment -> section -> unit -> part
-
-* neviim-rishonim -> null -> yehoshua -> 1 -> null
-* neviim-rishonim -> null -> yehoshua -> 5 -> b
-* parasha -> bereshit -> noah -> null -> 3
-* haftara -> bereshit -> noah -> null -> 3
-* mishna -> zeraim -> berachot -> 1 -> 1
-* tehillim -> null -> 137 -> null
-* moadim -> null -> pesah -> torah -> 1
+* parasha 
 
 # URL Structure
 
@@ -174,3 +163,38 @@ A different implementation of the API would be to add a route for each program a
 /tehillim-study/137
 
 /moadim-study/pesah/torah/1
+
+# Per-Program Structure Breakdown
+
+This section details what kind of data each program should include for each division.
+
+## Tanach Study
+
+Division: part (torah, neviim-rishonim, neviim-aharonim, tere-asar, ketuvim)
+Segment: null
+Section: sefer name (bereshit, shemot, yehoshua, shofetim, shemuel-1...)
+Unit: perek number or parasha name
+Part: part number, letter or mefaresh name
+Series: peshat
+
+## Parasha Study
+
+Division: torah
+Segment: null
+Section: sefer name (bereshit, shemot, vayikra, bemidbar, devarim)
+Unit: parasha name
+Part: part number or mefaresh name
+Series: peshat or perush
+
+## Examples
+
+division -> segment -> section -> unit -> part
+
+* neviim-rishonim -> null -> yehoshua -> 1 -> null
+* neviim-rishonim -> null -> yehoshua -> 5 -> b
+* parasha -> bereshit -> noah -> null -> 3
+* haftara -> bereshit -> noah -> null -> 3
+* mishna -> zeraim -> berachot -> 1 -> 1
+* tehillim -> null -> 137 -> null
+* moadim -> null -> pesah -> torah -> 1
+
