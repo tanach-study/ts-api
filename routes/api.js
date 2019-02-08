@@ -7,12 +7,15 @@ const ts = require('../models/tanach_study.js');
 const ps = require('../models/parasha_study.js');
 const utils = require('../models/utils.js');
 
+// DEPRECATED
 router.route('/sefarim')
   .get(seferModel.getAllSefarim, utils.sendAsJSON);
 
+// DEPRECATED
 router.route('/sefarim/:sefer')
   .get(seferModel.getOneSefer, utils.sendAsJSON);
 
+// DEPRECATED
 router.route('/perakim/:sefer/:perek')
   .get(perekModel.getOnePerek, utils.sendAsJSON);
 
