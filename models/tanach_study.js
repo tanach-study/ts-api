@@ -14,8 +14,10 @@ function getTanachStudyQueryObject(a, b, c, d, e) {
   // unit is the perek number in the book, e.g. '1'
   // c is originally a string, need to convert to int for db
   // c can be null if request is for all parts in a book
-  if (c) {
+  if (c && !Number.isNaN(parseInt(c, 10))) {
     query.unit = parseInt(c, 10);
+  } else if (c) {
+    query.unit = c;
   }
   if (d) {
     // part is used if a perek is split into multiple parts; is optional
@@ -25,7 +27,16 @@ function getTanachStudyQueryObject(a, b, c, d, e) {
   return query;
 }
 
+function getTanachStudyDistinctField(a, b, c, d, e) {
+  if (a && b && !c) {
+    return 'unit';
+  }
+
+  return null;
+}
+
 module.exports = {
   setTanachStudy,
   getTanachStudyQueryObject,
+  getTanachStudyDistinctField,
 };
