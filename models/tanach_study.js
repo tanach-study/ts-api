@@ -13,7 +13,10 @@ function getTanachStudyQueryObject(a, b, c, d, e) {
   query.section = b;
   // unit is the perek number in the book, e.g. '1'
   // c is originally a string, need to convert to int for db
-  query.unit = parseInt(c, 10);
+  // c can be null if request is for all parts in a book
+  if (c) {
+    query.unit = parseInt(c, 10);
+  }
   if (d) {
     // part is used if a perek is split into multiple parts; is optional
     // if not specified, perakim where there are multiple should return an array of all

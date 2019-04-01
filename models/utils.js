@@ -11,13 +11,13 @@ function sendAsJSON(req, res) {
 function parseRequest(req, res, next) {
   const { a, b, c, d, e } = req.params;
   res.data = [res.program, a, b, c, d, e];
-  const query = {};
+  let query = {};
   switch (res.program) {
     case 'tanach_study':
-      ts.getTanachStudyQueryObject(a, b, c, d, e);
+      query = ts.getTanachStudyQueryObject(a, b, c, d, e);
       break;
     case 'parasha_study':
-      ps.getParashaStudyQueryObject(a, b, c, d, e);
+      query = ps.getParashaStudyQueryObject(a, b, c, d, e);
       break;
     default:
       break;
