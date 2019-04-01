@@ -27,7 +27,7 @@ router.route('/teachers/:id')
 
 // requests should be in the form of /:program/:division/:segment/:section/:unit/:part
 router.route('/tanach-study/:a?/:b?/:c?/:d?/:e?')
-  .get(ts.setTanachStudy, utils.parseRequest, utils.getDataFromDB, utils.sendAsJSON);
+  .get(ts.setTanachStudy, utils.parseRequest, utils.runQueryOnDB, utils.sendAsJSON);
 router.route('/parasha-study/:a?/:b?/:c?/:d?/:e?')
   .get(ps.setParashaStudy, utils.parseRequest, utils.getDataFromDB, utils.sendAsJSON);
 
