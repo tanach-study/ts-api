@@ -41,8 +41,33 @@ function getMasechet(req, res, next) {
     .catch(dbErr => next(dbErr));
 }
 
+function getPerek(req, res, next) {
+  const { seder, masechet, perek } = req.params;
+  const query = {
+    division: 'mishna',
+    segment: seder,
+    section: masechet,
+    unit: parseInt(perek, 10),
+  };
+  getDB().then((client) => {
+    const db = client.db(DB_NAME);
+    db.collection('newPerakim')
+      .find(query, {
+        _id: 0,
+      })
+      .toArray()
+      .then((data) => {
+        res.data = data;
+        next();
+      })
+      .catch(findErr => next(findErr));
+  })
+    .catch(dbErr => next(dbErr));
+}
+
 module.exports = {
   setMishnaStudy,
   getMishnaStudyQueryObject,
   getMasechet,
+  getPerek,
 };
