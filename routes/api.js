@@ -29,12 +29,16 @@ router.route('/teachers/:id')
 // requests should be in the form of /:program/:division/:segment/:section/:unit/:part
 router.route('/tanach-study/:a?/:b?/:c?/:d?/:e?')
   .get(ts.setTanachStudy, utils.parseRequest, utils.runQueryOnDB, utils.sendAsJSON);
-router.route('/mishna-study/masechet/:seder/:masechet')
-  .get(ms.setMishnaStudy, ms.getMasechet, utils.sendAsJSON);
+
+router.route('/mishna-study/mishna/:seder/:masechet/:perek/:mishna')
+  .get(ms.setMishnaStudy, ms.getMishna, utils.sendAsJSON);
 router.route('/mishna-study/perek/:seder/:masechet/:perek')
   .get(ms.setMishnaStudy, ms.getPerek, utils.sendAsJSON);
+router.route('/mishna-study/masechet/:seder/:masechet')
+  .get(ms.setMishnaStudy, ms.getMasechet, utils.sendAsJSON);
 router.route('/mishna-study/:a?/:b?/:c?/:d?/:e?')
   .get(ts.setTanachStudy, utils.parseRequest, utils.runQueryOnDB, utils.sendAsJSON);
+
 router.route('/parasha-study/:a?/:b?/:c?/:d?/:e?')
   .get(ps.setParashaStudy, utils.parseRequest, utils.getDataFromDB, utils.sendAsJSON);
 
