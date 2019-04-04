@@ -27,6 +27,14 @@ router.route('/teachers/:id')
   .get(teacherModel.getOneTeacher, utils.sendAsJSON);
 
 // requests should be in the form of /:program/:division/:segment/:section/:unit/:part
+router.route('/tanach-study/teachers/:id')
+  .get(ts.setTanachStudy, ts.getOneTeacher, utils.sendAsJSON);
+router.route('/tanach-study/teachers')
+  .get(ts.setTanachStudy, ts.getAllTeachers, utils.sendAsJSON);
+router.route('/tanach-study/perakim/:sefer/:perek')
+  .get(ts.setTanachStudy, ts.getOnePerek, utils.sendAsJSON);
+router.route('/tanach-study/sefarim/:sefer')
+  .get(ts.setTanachStudy, ts.getOneSefer, utils.sendAsJSON);
 router.route('/tanach-study/:a?/:b?/:c?/:d?/:e?')
   .get(ts.setTanachStudy, utils.parseRequest, utils.runQueryOnDB, utils.sendAsJSON);
 

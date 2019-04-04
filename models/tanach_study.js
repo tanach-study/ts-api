@@ -1,3 +1,7 @@
+const { getDB } = require('../lib/dbConnection');
+
+const { DB_NAME } = process.env;
+
 function setTanachStudy(req, res, next) {
   res.program = 'tanach_study';
   next();
@@ -35,8 +39,97 @@ function getTanachStudyDistinctField(a, b, c, d, e) {
   return null;
 }
 
+function getOnePerek(req, res, next) {
+  const { sefer, perek } = req.params;
+  const queryPerek = String(parseInt(perek, 10)) === 'NaN' ? perek : parseInt(perek, 10);
+
+  getDB().then((client) => {
+    const db = client.db(DB_NAME);
+    db.collection('perakim')
+      .findOne({
+        book_name: sefer,
+        perek_id: queryPerek,
+      }, {
+        _id: 0,
+      })
+      .then((data) => {
+        res.data = data;
+        next();
+      })
+      .catch(findErr => next(findErr));
+  })
+    .catch(dbErr => next(dbErr));
+}
+
+function getAllSefarim(req, res, next) {
+  getDB().then((client) => {
+    const db = client.db(DB_NAME);
+    db.collection('books')
+      .find({}, { _id: 0 })
+      .sort({ 'seferMeta.book_id': 1 })
+      .toArray()
+      .then((sefarim) => {
+        res.data = sefarim;
+        next();
+      })
+      .catch(findErr => next(findErr));
+  })
+    .catch(dbErr => next(dbErr));
+}
+
+function getOneSefer(req, res, next) {
+  const { sefer } = req.params;
+  getDB().then((client) => {
+    const db = client.db(DB_NAME);
+    db.collection('books')
+      .findOne({ 'seferMeta.book_name': sefer }, { _id: 0 })
+      .then((data) => {
+        res.data = data;
+        next();
+      })
+      .catch(findErr => next(findErr));
+  })
+    .catch(dbErr => next(dbErr));
+}
+
+function getAllTeachers(req, res, next) {
+  getDB().then((client) => {
+    const db = client.db(DB_NAME);
+    db.collection('teachers')
+      .find({}, { _id: 0 })
+      .sort({ 'teacher_info.lname': 1 })
+      .toArray()
+      .then((teachers) => {
+        res.data = teachers;
+        next();
+      })
+      .catch(findErr => next(findErr));
+  })
+    .catch(dbErr => next(dbErr));
+}
+
+function getOneTeacher(req, res, next) {
+  const { id } = req.params;
+  getDB().then((client) => {
+    const db = client.db(DB_NAME);
+    db.collection('teachers')
+      .findOne({ 'teacher_info.teacher_id': parseInt(id, 10) }, { _id: 0 })
+      .then((teacher) => {
+        res.data = teacher;
+        next();
+      })
+      .catch(findErr => next(findErr));
+  })
+    .catch(dbErr => next(dbErr));
+}
+
 module.exports = {
   setTanachStudy,
   getTanachStudyQueryObject,
   getTanachStudyDistinctField,
+  getOnePerek,
+  getAllSefarim,
+  getOneSefer,
+  getAllTeachers,
+  getOneTeacher,
 };
