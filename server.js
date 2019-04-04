@@ -1,12 +1,9 @@
-'use strict';
-
-// if (process.env.NODE_ENV == 'development') require('dotenv').config({ silent: true });
-require('dotenv').config({ silent: true });
+const dotenv       = require('dotenv');
 const express      = require('express');
 const logger       = require('morgan');
-const path         = require('path');
 const bodyParser   = require('body-parser');
 
+dotenv.config({ silent: true });
 const app          = express();
 const PORT         = process.argv[2] || process.env.PORT || 3000;
 
@@ -26,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 // build API routes
-app.use('/', require('./routes/api.js'));
+// app.use('/', require('./routes/api.js'));
 app.use('/api', require('./routes/api.js'));
 app.use('/videos', require('./routes/videos.js'));
 app.use('/api/videos', require('./routes/videos.js'));
@@ -47,4 +44,6 @@ app.use((err, req, res, next) => {
   }
 });
 
+/* eslint-disable no-console */
 app.listen(PORT, () => console.warn(`Server here! Listening on port ${PORT}!`));
+/* eslint-enable no-console */

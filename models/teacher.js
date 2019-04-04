@@ -1,7 +1,10 @@
 const { getDB } = require('../lib/dbConnection');
 
+const { DB_NAME } = process.env;
+
 function getAllTeachers(req, res, next) {
-  getDB().then((db) => {
+  getDB().then((client) => {
+    const db = client.db(DB_NAME);
     db.collection('teachers')
       .find({}, { _id: 0 })
       .sort({ 'teacher_info.lname': 1 })
@@ -17,7 +20,8 @@ function getAllTeachers(req, res, next) {
 
 function getOneTeacher(req, res, next) {
   const { id } = req.params;
-  getDB().then((db) => {
+  getDB().then((client) => {
+    const db = client.db(DB_NAME);
     db.collection('teachers')
       .findOne({ 'teacher_info.teacher_id': parseInt(id, 10) }, { _id: 0 })
       .then((teacher) => {
