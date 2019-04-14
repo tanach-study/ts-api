@@ -55,6 +55,7 @@ function getPerek(req, res, next) {
       .find(query, {
         _id: 0,
       })
+      .sort({ part_sequence: 1 })
       .toArray()
       .then((data) => {
         res.data = data;
