@@ -90,10 +90,35 @@ function getMishna(req, res, next) {
     .catch(dbErr => next(dbErr));
 }
 
+function getDate(req, res, next) {
+  const { date } = req.params;
+  // if date not specified default to current date
+  const d = date ? new Date(date) : new Date();
+  d.setHours(0, 0, 0, 0);
+  const query = {
+    division: 'mishna',
+    date: d,
+  };
+  getDB().then((client) => {
+    const db = client.db(DB_NAME);
+    db.collection('schedule')
+      .findOne(query, {
+        _id: 0,
+      })
+      .then((data) => {
+        res.data = data;
+        next();
+      })
+      .catch(findErr => next(findErr));
+  })
+    .catch(dbErr => next(dbErr));
+}
+
 module.exports = {
   setMishnaStudy,
   getMishnaStudyQueryObject,
   getMasechet,
   getPerek,
   getMishna,
+  getDate,
 };

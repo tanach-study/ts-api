@@ -44,6 +44,10 @@ router.route('/mishna-study/perek/:seder/:masechet/:perek')
   .get(ms.setMishnaStudy, ms.getPerek, utils.sendAsJSON);
 router.route('/mishna-study/masechet/:seder/:masechet')
   .get(ms.setMishnaStudy, ms.getMasechet, utils.sendAsJSON);
+router.route('/mishna-study/schedule/today')
+  .get(ms.setMishnaStudy, ms.getDate, utils.sendAsJSON);
+router.route('/mishna-study/schedule/:date')
+  .get(ms.setMishnaStudy, ms.getDate, utils.sendAsJSON);
 router.route('/mishna-study/:a?/:b?/:c?/:d?/:e?')
   .get(ts.setTanachStudy, utils.parseRequest, utils.runQueryOnDB, utils.sendAsJSON);
 
