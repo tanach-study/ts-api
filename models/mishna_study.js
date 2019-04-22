@@ -93,11 +93,17 @@ function getMishna(req, res, next) {
 function getDate(req, res, next) {
   const { date } = req.params;
   // if date not specified default to current date
-  const d = date ? new Date(date) : new Date();
-  d.setHours(0, 0, 0, 0);
+  const queryDate = date ? new Date(date) : new Date();
+  queryDate.setHours(0, 0, 0, 0);
+  const queryTomorrow = new Date();
+  queryTomorrow.setDate(queryDate.getDate() + 1);
+  queryTomorrow.setHours(0, 0, 0, 0);
   const query = {
     division: 'mishna',
-    date: d,
+    date: {
+      $gte: queryDate,
+      $lt: queryTomorrow,
+    },
   };
   getDB().then((client) => {
     const db = client.db(DB_NAME);
