@@ -92,6 +92,23 @@ function getOneSefer(req, res, next) {
     .catch(dbErr => next(dbErr));
 }
 
+function getOneSeferNew(req, res, next) {
+  const { sefer } = req.params;
+  getDB().then((client) => {
+    const db = client.db(DB_NAME);
+    db.collection('newPerakim')
+      .find({ section: sefer }, { projection: { _id: 0 } })
+      .sort({ unit_sequence: 1, part_sequence: 1 })
+      .toArray()
+      .then((data) => {
+        res.data = data;
+        next();
+      })
+      .catch(findErr => next(findErr));
+  })
+    .catch(dbErr => next(dbErr));
+}
+
 function getAllTeachers(req, res, next) {
   getDB().then((client) => {
     const db = client.db(DB_NAME);
@@ -129,7 +146,7 @@ module.exports = {
   getTanachStudyDistinctField,
   getOnePerek,
   getAllSefarim,
-  getOneSefer,
+  getOneSefer: getOneSeferNew,
   getAllTeachers,
   getOneTeacher,
 };
