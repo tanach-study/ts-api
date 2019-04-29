@@ -51,21 +51,22 @@ function sendEmail(req, res, next) {
     },
   };
 
-  const executeCB = (err, response) => {
+  function executeCB(err, response) {
     if (err) {
       console.log('The API returned an error:', err);
-      return next(err);
-    } else {
-      res.data = {
-        status: 'OK',
-        response: response,
-      };
-      next();
+      const respErr = new Error(err);
+      respErr.status = 500;
+      return next(respErr);
     }
-  };
+    res.data = {
+      status: 200,
+      response,
+    };
+    return next();
+  }
 
   const gmail = google.gmail('v1');
-  const request = gmail.users.messages.send(requestObj, executeCB);
+  gmail.users.messages.send(requestObj, executeCB);
 }
 
 module.exports = {
