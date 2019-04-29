@@ -1,10 +1,10 @@
 const router = require('express').Router();
-const gmailService = require('../services/gmail.js');
+const awsSES = require('../services/aws_ses.js');
 
 function sendAsJSON(req, res) {
   res.json(res.data);
 }
 
-router.post('/', gmailService.getAuthObject, gmailService.generateEmailString, gmailService.sendEmail, sendAsJSON);
+router.post('/', awsSES.sendEmail, sendAsJSON);
 
 module.exports = router;
