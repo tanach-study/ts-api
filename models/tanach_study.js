@@ -61,6 +61,30 @@ function getOnePerek(req, res, next) {
     .catch(dbErr => next(dbErr));
 }
 
+function getOnePerekNew(req, res, next) {
+  const { sefer, perek } = req.params;
+  const queryPerek = String(parseInt(perek, 10)) === 'NaN' ? perek : parseInt(perek, 10);
+
+  getDB().then((client) => {
+    const db = client.db(DB_NAME);
+    db.collection('newPerakim')
+      .find({
+        section: sefer,
+        unit: queryPerek,
+      }, {
+        projection: { _id: 0 },
+      })
+      .sort({ division_sequence: 1, section_sequence: 1, unit_sequence: 1, part_sequence: 1 })
+      .toArray()
+      .then((data) => {
+        res.data = data;
+        next();
+      })
+      .catch(findErr => next(findErr));
+  })
+    .catch(dbErr => next(dbErr));
+}
+
 function getAllSefarim(req, res, next) {
   getDB().then((client) => {
     const db = client.db(DB_NAME);
@@ -144,7 +168,7 @@ module.exports = {
   setTanachStudy,
   getTanachStudyQueryObject,
   getTanachStudyDistinctField,
-  getOnePerek,
+  getOnePerek: getOnePerekNew,
   getAllSefarim,
   getOneSefer: getOneSeferNew,
   getAllTeachers,
