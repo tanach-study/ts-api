@@ -31,6 +31,7 @@ function getMasechet(req, res, next) {
       .find(query, {
         _id: 0,
       })
+      .sort({ unit_sequence: 1 })
       .toArray()
       .then((data) => {
         res.data = data;
