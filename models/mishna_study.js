@@ -108,10 +108,11 @@ function getDate(req, res, next) {
   };
   getDB().then((client) => {
     const db = client.db(DB_NAME);
-    db.collection('schedule')
-      .findOne(query, {
+    db.collection('newPerakim')
+      .find(query, {
         _id: 0,
       })
+      .toArray()
       .then((data) => {
         res.data = data;
         next();
