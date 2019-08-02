@@ -48,7 +48,7 @@ function getPerek(req, res, next) {
     division: 'mishna',
     segment: seder,
     section: masechet,
-    unit: parseInt(perek, 10),
+    unit: perek,
   };
   getDB().then((client) => {
     const db = client.db(DB_NAME);

@@ -63,14 +63,14 @@ function getOnePerek(req, res, next) {
 
 function getOnePerekNew(req, res, next) {
   const { sefer, perek } = req.params;
-  const queryPerek = String(parseInt(perek, 10)) === 'NaN' ? perek : parseInt(perek, 10);
+  // const queryPerek = String(parseInt(perek, 10)) === 'NaN' ? perek : parseInt(perek, 10);
 
   getDB().then((client) => {
     const db = client.db(DB_NAME);
     db.collection('newPerakim')
       .find({
         section: sefer,
-        unit: queryPerek,
+        unit: perek,
       }, {
         projection: { _id: 0 },
       })
