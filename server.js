@@ -60,4 +60,3 @@ function shutDown(sig) {
 
 process.on('SIGINT', shutDown);
 process.on('SIGTERM', shutDown);
-process.on('SIGKILL', shutDown);
