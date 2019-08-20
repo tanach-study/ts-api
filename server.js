@@ -3,6 +3,7 @@ const express      = require('express');
 const logger       = require('morgan');
 const bodyParser   = require('body-parser');
 
+const log         = require('./lib/logger.js');
 const { closeDB } = require('./lib/dbConnection.js');
 
 dotenv.config({ silent: true });
@@ -46,16 +47,17 @@ app.use((err, req, res, next) => {
   }
 });
 
-/* eslint-disable no-console */
-const server = app.listen(PORT, () => console.warn(`Server here! Listening on port ${PORT}!`));
-/* eslint-enable no-console */
+const server = app.listen(PORT, () => log.warn(`Server here! Listening on port ${PORT}!`));
 
-function shutDown() {
+function shutDown(sig) {
+  log.info(`received ${sig}, starting shutdown`);
   closeDB();
   server.close(() => {
+    log.info('closed server, exiting');
     process.exit(0);
   });
 }
 
-process.on('SIGTERM', shutDown);
 process.on('SIGINT', shutDown);
+process.on('SIGTERM', shutDown);
+process.on('SIGKILL', shutDown);
