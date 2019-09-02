@@ -1,4 +1,5 @@
 const { getDB } = require('../lib/dbConnection');
+const { perakimComparator } = require('../lib/lib.js');
 
 const { DB_NAME } = process.env;
 
@@ -99,22 +100,30 @@ function getDate(req, res, next) {
   const queryTomorrow = new Date();
   queryTomorrow.setDate(queryDate.getDate() + 1);
   queryTomorrow.setHours(0, 0, 0, 0);
-  const query = {
-    division: 'mishna',
-    date: {
-      $gte: queryDate,
-      $lt: queryTomorrow,
-    },
-  };
+
   getDB().then((client) => {
     const db = client.db(DB_NAME);
     db.collection('newPerakim')
-      .find(query, {
+      .find({
+        division: 'mishna',
+        date: {
+          $gte: queryDate,
+          $lt: queryTomorrow,
+        },
+      })
+      .project({
         _id: 0,
+      })
+      .sort({
+        division_sequence: 1,
+        segment_sequence: 1,
+        section_sequence: 1,
+        unit_sequence: 1,
+        part_sequence: 1,
       })
       .toArray()
       .then((data) => {
-        res.data = data;
+        res.data = data.sort(perakimComparator);
         next();
       })
       .catch(findErr => next(findErr));
