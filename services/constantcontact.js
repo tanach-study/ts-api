@@ -18,7 +18,7 @@ function validateData(req, res, next) {
     next(err);
   }
   const numberOfLists = lists.reduce((acc, list) => list === true ? acc += 1 : acc, 0);
-  if(numberOfLists == 0) {
+  if (numberOfLists === 0) {
     const err = new Error('Please select at least one email list.');
     err.status = 422;
     next(err);
@@ -59,16 +59,20 @@ function registerEmail(req, res, next) {
   let method;
   const key = process.env.CC_KEY;
   const token = process.env.CC_TOKEN;
-  const listId = process.env.CC_LIST_PROD;
+  const apiBase = 'https://api.constantcontact.com/v2';
 
-  const { CC_LIST_TS_TORAH, CC_LIST_TS_NACH, CC_LIST_MS_DAILY, CC_LIST_TS_EVENTS } = process.env;
+  const { CC_LIST_TS_TORAH,
+    CC_LIST_TS_NACH,
+    CC_LIST_MS_DAILY,
+    CC_LIST_PSPLUS_DAILY,
+    CC_LIST_TS_EVENTS } = process.env;
   const allLists = [
     {
-      id: CC_LIST_TS_TORAH, 
+      id: CC_LIST_TS_TORAH,
       name: 'Parashat Hashavua',
     },
     {
-      id: CC_LIST_TS_NACH, 
+      id: CC_LIST_TS_NACH,
       name: 'Nevi\'im & Ketuvim',
     },
     {
@@ -76,9 +80,13 @@ function registerEmail(req, res, next) {
       name: 'MishnaStudy',
     },
     {
+      id: CC_LIST_PSPLUS_DAILY,
+      name: 'ParashaStudy Plus',
+    },
+    {
       id: CC_LIST_TS_EVENTS,
       name: 'Events',
-    }
+    },
   ];
 
   const bodyLists = JSON.parse(req.body.emailLists || '[]');
@@ -86,7 +94,7 @@ function registerEmail(req, res, next) {
   const lists = [];
   for (let i = 0; i < bodyLists.length; i++) {
     if (bodyLists[i]) {
-      lists.push({ id: allLists[i].id })
+      lists.push({ id: allLists[i].id });
     }
   }
 
@@ -96,7 +104,7 @@ function registerEmail(req, res, next) {
   if (res.existingUser) {
     const user = res.existingUser[0];
     const userID = user.id;
-    url = `https://api.constantcontact.com/v2/contacts/${userID}?api_key=${key}&action_by=ACTION_BY_VISITOR`;
+    url = `${apiBase}/contacts/${userID}?api_key=${key}&action_by=ACTION_BY_VISITOR`;
     method = 'PUT';
     body.lists = lists;
     const emailAddresses = user.email_addresses.map(email => ({
@@ -108,10 +116,10 @@ function registerEmail(req, res, next) {
     const { email } = req.body;
     const fname = req.body.firstName;
     const lname = req.body.lastName;
-    url = `https://api.constantcontact.com/v2/contacts?api_key=${key}&action_by=ACTION_BY_VISITOR`;
+    url = `${apiBase}/contacts?api_key=${key}&action_by=ACTION_BY_VISITOR`;
     method = 'POST';
     body = {
-      lists: lists,
+      lists,
       email_addresses: [
         {
           email_address: email,
@@ -135,7 +143,7 @@ function registerEmail(req, res, next) {
       if (resp.id) {
         const retLists = lists.map((listObj) => {
           const obj = allLists.find(o => o.id === listObj.id);
-          return { name: obj.name }
+          return { name: obj.name };
         });
         res.data = {
           status: 'OK',
