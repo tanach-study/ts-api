@@ -59,6 +59,7 @@ function registerEmail(req, res, next) {
   let method;
   const key = process.env.CC_KEY;
   const token = process.env.CC_TOKEN;
+  const apiBase = 'https://api.constantcontact.com/v2';
 
   const { CC_LIST_TS_TORAH,
     CC_LIST_TS_NACH,
@@ -103,7 +104,6 @@ function registerEmail(req, res, next) {
   if (res.existingUser) {
     const user = res.existingUser[0];
     const userID = user.id;
-    const apiBase = 'https://api.constantcontact.com/v2';
     url = `${apiBase}/contacts/${userID}?api_key=${key}&action_by=ACTION_BY_VISITOR`;
     method = 'PUT';
     body.lists = lists;
