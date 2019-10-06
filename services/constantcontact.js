@@ -116,7 +116,7 @@ function registerEmail(req, res, next) {
     const { email } = req.body;
     const fname = req.body.firstName;
     const lname = req.body.lastName;
-    url = `https://api.constantcontact.com/v2/contacts?api_key=${key}&action_by=ACTION_BY_VISITOR`;
+    url = `${apiBase}/contacts?api_key=${key}&action_by=ACTION_BY_VISITOR`;
     method = 'POST';
     body = {
       lists,
