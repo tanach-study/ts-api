@@ -3,12 +3,16 @@ const express      = require('express');
 const logger       = require('morgan');
 const bodyParser   = require('body-parser');
 
-const log         = require('./lib/logger.js');
+const { init: appLoggerInit, getLogger } = require('./lib/logger.js');
+
 const { closeDB } = require('./lib/dbConnection.js');
 
 dotenv.config({ silent: true });
 const app          = express();
 const PORT         = process.argv[2] || process.env.PORT || 3000;
+
+appLoggerInit();
+const log = getLogger();
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -34,8 +38,6 @@ app.use('/signup', require('./routes/signup.js'));
 app.use('/api/signup', require('./routes/signup.js'));
 app.use('/contact', require('./routes/contact.js'));
 app.use('/api/contact', require('./routes/contact.js'));
-
-app.use(logger('dev'));
 
 app.use((err, req, res, next) => {
   if (err.status) {
