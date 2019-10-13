@@ -1,5 +1,8 @@
 const fetch = require('node-fetch');
 const { isValidEmail } = require('../lib/lib.js');
+const { getLogger } = require('../lib/logger.js');
+
+const log = getLogger();
 
 function validateData(req, res, next) {
   const { email } = req.body;
@@ -9,17 +12,20 @@ function validateData(req, res, next) {
 
   if (!(email && fname && lname && lists)) {
     const err = new Error('Please fill out all fields.');
+    log.error('validateData: missing fields');
     err.status = 422;
     next(err);
   }
   if (!isValidEmail(email)) {
     const err = new Error('Please submit a valid email address.');
+    log.error('validateData: invalid address', email);
     err.status = 422;
     next(err);
   }
   const numberOfLists = lists.reduce((acc, list) => list === true ? acc += 1 : acc, 0);
   if (numberOfLists === 0) {
     const err = new Error('Please select at least one email list.');
+    log.error('validateData: no lists selected');
     err.status = 422;
     next(err);
   }
@@ -44,10 +50,12 @@ function checkIfEmailExists(req, res, next) {
     .then((data) => {
       // if the results set is empty then we're good to continue
       if (data.results && data.results.length === 0) {
+        log.info(`checkIfEmailExists: email does not exist ${email}`);
         next();
       } else {
         // email address is registered; we need to add them back to the list
         res.existingUser = data.results;
+        log.info(`checkIfEmailExists: email exists ${email}`);
         next();
       }
     })
@@ -152,9 +160,12 @@ function registerEmail(req, res, next) {
           last_name: req.body.lastName,
           email_lists: retLists,
         };
+        const strLists = retLists.map(e => e.name).join(', ');
+        log.info(`registerEmail: successfully registered ${req.body.email} for lists ${strLists}`);
         next();
       } else {
         const err = new Error('Internal server error.');
+        log.error(`registerEmail: could not register email ${resp}`);
         err.status = 500;
         next(err);
       }
