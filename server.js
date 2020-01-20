@@ -5,8 +5,6 @@ const bodyParser   = require('body-parser');
 
 const { init: appLoggerInit, getLogger } = require('./lib/logger.js');
 
-const { closeDB } = require('./lib/dbConnection.js');
-
 dotenv.config({ silent: true });
 const app          = express();
 const PORT         = process.argv[2] || process.env.PORT || 3000;
@@ -30,10 +28,6 @@ app.use((req, res, next) => {
 });
 
 // build API routes
-// app.use('/', require('./routes/api.js'));
-app.use('/api', require('./routes/api.js'));
-app.use('/videos', require('./routes/videos.js'));
-app.use('/api/videos', require('./routes/videos.js'));
 app.use('/signup', require('./routes/signup.js'));
 app.use('/api/signup', require('./routes/signup.js'));
 app.use('/contact', require('./routes/contact.js'));
@@ -53,7 +47,6 @@ const server = app.listen(PORT, () => log.warn(`Server here! Listening on port $
 
 function shutDown(sig) {
   log.info(`received ${sig}, starting shutdown`);
-  closeDB();
   server.close(() => {
     log.info('closed server, exiting');
     process.exit(0);
