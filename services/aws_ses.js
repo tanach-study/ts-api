@@ -2,53 +2,59 @@ const nodemailer = require('nodemailer');
 const aws = require('aws-sdk');
 const { isValidEmail } = require('../lib/lib.js');
 
-const { FROM_EMAIL, TO_EMAIL } = process.env;
+let mailerSingleton = null;
 
-const mailer = nodemailer.createTransport({
-  SES: new aws.SES({
-    apiVersion: '2010-12-01',
-  }),
-});
+function initMailer() {
+  if (!!mailerSingleton) {
+    return mailerSingleton;
+  }
 
-function sendEmailWithNodemailer(req, res, next) {
-  const { name, email, subject, message } = req.body;
+  mailerSingleton = nodemailer.createTransport({
+    SES: new aws.SES({
+      apiVersion: '2010-12-01',
+    }),
+  });
+  return mailerSingleton;
+}
+
+function validateInput({ name, email, subject, message }) {
+  console.log('validating input', name, email, subject, message);
   if (!(name && email && subject && message)) {
     const err = new Error('Please fill out all the fields.');
     err.status = 422;
-    return next(err);
+    return err;
   }
+
   if (!isValidEmail(email)) {
     const err = new Error('Invalid email.');
     err.status = 422;
-    return next(err);
+    return err;
   }
 
+  return { status: 200 };
+}
+
+function sendEmailWithNodemailer({ name, email, subject, message }, FROM_EMAIL, TO_EMAIL) {
+  console.log('sending email', name, email, subject, message, FROM_EMAIL, TO_EMAIL);
   const wrapped = `
     ${message}
     <br />
     <p>-- ${name}</p>
   `;
 
-  mailer.sendMail({
+  const mailer = initMailer()
+
+  // return a promise
+  return mailer.sendMail({
     from: `${name} <${FROM_EMAIL}>`,
     replyTo: email,
     to: TO_EMAIL,
     subject,
     html: wrapped,
-  }, (err, info) => {
-    if (err) {
-      const respErr = new Error(err);
-      respErr.status = 500;
-      return next(respErr);
-    }
-    res.data = {
-      status: 200,
-    };
-    return next();
   });
-  return true;
 }
 
 module.exports = {
   sendEmail: sendEmailWithNodemailer,
+  validateInput,
 };
